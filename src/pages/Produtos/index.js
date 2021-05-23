@@ -9,18 +9,51 @@ import './styles.css'
 
 export default function Produtos() {
     const [produtos, setProdutos] = useState([])
+    const [descricao, setDescricao] = useState('')
+    const [pagina, setPagina] = useState(1)
 
     // const ongId = localStorage.getItem('ongId')
     // const ongName = localStorage.getItem('ongName')
 
     const history = useHistory()
 
-    useEffect(() => {
-        api.get('produtos')
+    function getProdutos(descrFiltro, pageFiltro) {
+        let reqParams = {}
+        if (descrFiltro !== '') {
+            reqParams['descricao'] = descrFiltro
+        }
+        if (pageFiltro !== '') {
+            reqParams['page'] = pageFiltro
+        }
+
+        api.get('produtos', 
+            {
+                params: reqParams,
+            }
+        )
         .then(response => {
             setProdutos(response.data)
         })
-    }, [])
+        .catch(err => {
+            alert('Erro ao buscar dados, tente novamente.')
+            console.log(err)
+        }) 
+    }
+
+    useEffect(() => {
+        getProdutos(descricao, pagina)
+    }, [pagina])
+
+    function handlePesquisa() {
+        getProdutos(descricao, 1)
+        setPagina(1)
+    }
+
+    function handlePageChange(novaPagina) {
+        if (novaPagina >= 1) {
+            setPagina(novaPagina)
+        }
+    }
 
     async function handleDeleteIncident(id){
         // try{
@@ -47,7 +80,7 @@ export default function Produtos() {
             <header>
                 <img alt="Be The Hero"/>
                 <span>Bem vinda, </span>
-                <Link className="button" to="/produtos/novo">Cadastrar novo caso</Link>
+                <Link className="button" to="/produtos/novo">Cadastrar novo produto</Link>
                 <button onClick={handleLogout} type="button">
                   {/*}  <FiPower size={18} color="E02041"></FiPower>*/} Sair
                 </button>
@@ -55,17 +88,24 @@ export default function Produtos() {
 
             <h1>Produtos cadastrados</h1>
 
+            <input 
+                placeholder="Descrição do Produto"
+                value={descricao}
+                onChange={e => setDescricao(e.target.value)}
+            />
+            <button onClick={handlePesquisa} >Pesquisar</button>
+
             <ul>
                 {produtos.map(produto => (
                     <li key={produto.id}>
-                        <strong>CASO:</strong>
-                        <p>{produto.descricao}</p>
+                        <strong>ID E DESCRIÇÃO DO PRODUTO:</strong>
+                        <p>{produto.id} {produto.descricao}</p>
 
-                        <strong>DESCRIÇÂO:</strong>
-                        <p>{produto.tipoUnidade}</p>
-
-                        <strong>VALOR:</strong>
+                        <strong>PREÇO:</strong>
                         <p>{ Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(produto.preco) }</p>
+
+                        <strong>TIPO DA UNIDADE:</strong>
+                        <p>{produto.tipoUnidade}</p>
 
                         <button onClick={() => handleDeleteIncident(produto.id)} type="button">
                             {/*<FiTrash2 size={20} color="a8a8b3" />*/} deletar
@@ -73,6 +113,18 @@ export default function Produtos() {
                     </li>
                 ))}
             </ul>
+
+            <div class="pagination">
+                <a href="#" onClick={() => handlePageChange(pagina-1)} >&laquo;</a>
+                <a href="#" onClick={e => handlePageChange(1)} >1</a>
+                <a href="#" onClick={e => handlePageChange(2)} >2</a>
+                <a href="#">3</a>
+                <a href="#">4</a>
+                <a href="#">5</a>
+                <a href="#">6</a>
+                <a href="#">&raquo;</a>
+            </div>
+            {/* https://www.w3schools.com/css/css3_pagination.asp */}
         </div>
     )
 }
