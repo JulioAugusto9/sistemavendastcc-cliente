@@ -1,0 +1,25 @@
+.pagination {
+    display: flex;
+    justify-content: center;
+}
+
+.pagination button {
+    height: 60px;
+    width: 60px;
+    border-radius: 4px;
+    border: 1px solid #dcdce6;
+    background: transparent;
+    margin-left: 16px;
+    transition: border-color 0.2s;
+}
+
+.pagination button.active {
+    background-color: #e02041;
+    color: white;
+  }
+  
+.pagination button:hover:not(.active) {
+    background-color: #ddd;
+}
+
+/* {https://www.w3schools.com/css/css3_pagination.asp} */

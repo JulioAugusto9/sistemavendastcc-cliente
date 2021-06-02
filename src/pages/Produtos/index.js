@@ -5,12 +5,17 @@ import { Link, useHistory } from 'react-router-dom'
 import api from '../../services/api'
 import './styles.css'
 
+import BarraPesquisa from '../../components/BarraPesquisa'
+import PageIndex from '../../components/PageIndex'
+import NavBar from '../../components/NavBar'
+
 //import logoImg from '../../assets/logo.svg'
 
 export default function Produtos() {
     const [produtos, setProdutos] = useState([])
     const [descricao, setDescricao] = useState('')
     const [pagina, setPagina] = useState(1)
+    //const [totalPaginas, setTotalPaginas] = useState(1)
 
     // const ongId = localStorage.getItem('ongId')
     // const ongName = localStorage.getItem('ongName')
@@ -44,16 +49,10 @@ export default function Produtos() {
         getProdutos(descricao, pagina)
     }, [pagina])
 
-    function handlePesquisa() {
-        getProdutos(descricao, 1)
-        setPagina(1)
-    }
-
-    function handlePageChange(novaPagina) {
-        if (novaPagina >= 1) {
-            setPagina(novaPagina)
-        }
-    }
+    // function handlePesquisa() {
+    //     getProdutos(descricao, 1)
+    //     setPagina(1)
+    // }
 
     async function handleDeleteIncident(id){
         // try{
@@ -69,31 +68,27 @@ export default function Produtos() {
         // }
     }
 
-    function handleLogout() {
-        // localStorage.clear()
-
-        // history.push('/')
-    }
-
     return (
+        <>
         <div className="profile-container">
+            <NavBar></NavBar>
             <header>
                 <img alt="Be The Hero"/>
                 <span>Bem vinda, </span>
                 <Link className="button" to="/produtos/novo">Cadastrar novo produto</Link>
-                <button onClick={handleLogout} type="button">
-                  {/*}  <FiPower size={18} color="E02041"></FiPower>*/} Sair
-                </button>
+                {/* <button onClick={handleLogout} type="button">
+                    <FiPower size={18} color="E02041"></FiPower> Sair
+                </button> */}
             </header>
 
             <h1>Produtos cadastrados</h1>
 
-            <input 
-                placeholder="Descrição do Produto"
-                value={descricao}
-                onChange={e => setDescricao(e.target.value)}
-            />
-            <button onClick={handlePesquisa} >Pesquisar</button>
+            <BarraPesquisa 
+                filtro={descricao} 
+                setFiltro={setDescricao} 
+                getEntidades={getProdutos}
+                setPagina={setPagina}
+            ></BarraPesquisa>
 
             <ul>
                 {produtos.map(produto => (
@@ -114,17 +109,12 @@ export default function Produtos() {
                 ))}
             </ul>
 
-            <div class="pagination">
-                <a href="#" onClick={() => handlePageChange(pagina-1)} >&laquo;</a>
-                <a href="#" onClick={e => handlePageChange(1)} >1</a>
-                <a href="#" onClick={e => handlePageChange(2)} >2</a>
-                <a href="#">3</a>
-                <a href="#">4</a>
-                <a href="#">5</a>
-                <a href="#">6</a>
-                <a href="#">&raquo;</a>
-            </div>
-            {/* https://www.w3schools.com/css/css3_pagination.asp */}
+            <PageIndex
+                pagina={pagina}
+                setPagina={setPagina}
+                totalPaginas={5}
+            ></PageIndex>
         </div>
+        </>
     )
 }

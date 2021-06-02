@@ -2,8 +2,12 @@ import React, {useState} from 'react'
 import { Link, useHistory } from 'react-router-dom'
 //import { FiArrowLeft } from 'react-icons/fi'
 
+import NavBar from '../../components/NavBar';
+
 import api from '../../services/api'
+
 import './styles.css'
+
 
 //import logoImg from '../../assets/logo.svg'
 
@@ -35,6 +39,7 @@ export default function NovoProduto(){
 
     return (
         <div className="new-incident-container">
+            <NavBar></NavBar>
             <div className="content">
                 <section>
                     <img alt="Be The Hero"/>
