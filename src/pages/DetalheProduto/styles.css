@@ -36,7 +36,36 @@
     width: 100%;
 }
 
-.cadastro-container .content form input,
+/* .cadastro-container .content form input,
 .cadastro-container .content form textarea {
     margin-top: 24px;
+} */
+
+.cadastro-container .content form strong {
+    display: block;
+    margin-bottom: 0px;
+    color: #41414d;
+    margin-top: 32px;
+}
+
+.botoes {
+    margin-top: 24px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.botoes .acao {
+    height: 60px;
+    border-radius: 4px;
+    border: 1px solid #dcdce6;
+    background: transparent;
+    margin-left: 16px;
+    padding: 0 24px;
+    transition: 0.2s;
+}
+
+.botoes .acao:hover {
+    background: #e02041;
+    color: #FFF;
 }

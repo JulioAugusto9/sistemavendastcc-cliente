@@ -1,0 +1,24 @@
+.home-container {
+    width: 100%;
+    max-width: 1120px;
+    height: 70vh;
+    margin: 0 auto;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.home-container .appname {
+    height: 80%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.home-container .appname h1 {
+    font-size: 44px;
+    color: #e02041;
+    font-style: italic;
+}

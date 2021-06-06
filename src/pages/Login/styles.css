@@ -10,6 +10,19 @@
     justify-content: center;
 }
 
+.cadastro-container .appname {
+    height: 20vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.cadastro-container .appname h1 {
+    font-size: 44px;
+    color: #e02041;
+    font-style: italic;
+}
+
 .cadastro-container .content{
     width: 100%;
     padding: 96px;

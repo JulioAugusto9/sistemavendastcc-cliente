@@ -5,16 +5,18 @@ import { Link, useHistory } from 'react-router-dom'
 import NavBar from '../../components/NavBar';
 
 import api from '../../services/api'
+import msgCamposInvalidos from '../../services/msgCamposInvalidos';
+import parseReal from '../../services/parseReal';
 
 import './styles.css'
-
-
-//import logoImg from '../../assets/logo.svg'
 
 export default function NovoProduto(){
     const [descricao, setDescricao] = useState('');
     const [tipoUnidade, setTipoUnidade] = useState('');
     const [preco, setPreco] = useState('');
+
+    const userLogin = localStorage.getItem('userLogin')
+    const userSenha = localStorage.getItem('userSenha')
 
     const history = useHistory()
 
@@ -24,33 +26,30 @@ export default function NovoProduto(){
         const data = {
             descricao,
             tipoUnidade,
-            preco,
+            preco: parseReal(preco),
         }
 
         try{
-            await api.post('produtos', data) 
+            await api.post('produtos', data, {
+                auth: {
+                    username: userLogin,
+                    password: userSenha
+                }
+            }) 
 
             history.push('/produtos')
         } catch (err){
-            alert('Erro ao cadastrar caso, tente novamente.')
+            alert(msgCamposInvalidos(err))
             console.log(err);
         }
     }
 
     return (
-        <div className="new-incident-container">
+        <div className="cadastro-container">
             <NavBar></NavBar>
             <div className="content">
-                <section>
-                    <img alt="Be The Hero"/>
-
-                    <h1>Cadastrar novo Produto</h1>
-                    <p>teste.</p>
-                    <Link className="back-link" to="/produtos">
-                    {/*<FiArrowLeft size={16} color="E02041"></FiArrowLeft>*/}
-                        Voltar
-                    </Link>
-                </section>
+                
+                <h1>Cadastrar novo Produto</h1>
 
                 <form onSubmit={handleNovoProduto}>
                     <input 
@@ -67,6 +66,7 @@ export default function NovoProduto(){
                         placeholder="Preço em reais"             
                         value={preco}
                         onChange={e => setPreco(e.target.value)}
+                        type="number"
                     />
 
                     <button className="button" type="submit">Cadastrar</button>

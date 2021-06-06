@@ -40,7 +40,7 @@ export default function PageIndex({pagina, totalPaginas, setPagina}) {
         paginas.push( <button 
             onClick={() => {
                 setPagina(pagAnt => {
-                    if (validPage(pagAnt+1)) return pagAnt+1
+                    if (validPage(Number(pagAnt)+1)) return Number(pagAnt)+1
                     else return pagAnt
                 })
             }}

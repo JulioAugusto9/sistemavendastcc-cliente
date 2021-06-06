@@ -1,35 +1,50 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useHistory } from 'react-router-dom'
 
 import './styles.css'
 
+function LinkUsuarios({ userRole }) {
+    if (userRole !== 'ROLE_GERENTE') return (<></>)
+    return (
+        <Link to="/produtos" className="link" >
+            <button type="button" >
+                Usuários
+            </button>
+        </Link>
+    )
+}
+
 export default function NavBar() {
 
-    function handleLogout() {
-        // localStorage.clear()
+    const userRole = localStorage.getItem('userRole')
 
-        // history.push('/')
+    const history = useHistory()
+
+    function handleLogout() {
+        localStorage.clear()
+
+        history.push('/login')
     }
 
     return (
         <div className="navigation-bar" >
             <ul>
-                <button type="button" >
-                    Clientes
-                    <Link to="/produtos" ></Link>
-                </button>
-                <button type="button" >
-                    Pedidos
-                    <Link to="/produtos"></Link>
-                </button>
-                <button type="button" >
-                    Produtos
-                    <Link to="/produtos"></Link>
-                </button>
-                <button type="button" >
-                    Usuários
-                    <Link to="/produtos"></Link>
-                </button>
+                <Link to="/produtos" className="link" >
+                    <button type="button" >
+                        Clientes
+                    </button>
+                </Link>
+                <Link to="/produtos" className="link" >
+                    <button type="button" >
+                        Pedidos
+                    </button>
+                </Link>
+                <Link to="/produtos" className="link" >
+                    <button type="button" >
+                        Produtos
+                    </button>
+                </Link>
+                <LinkUsuarios userRole={userRole} ></LinkUsuarios>
                 <button onClick={handleLogout} type="button" >
                     Sair
                 </button>
