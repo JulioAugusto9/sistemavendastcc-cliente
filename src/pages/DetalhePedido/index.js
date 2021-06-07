@@ -1,5 +1,5 @@
 import React, {useState, useEffect } from 'react'
-import { Link, useHistory } from 'react-router-dom'
+import { Link, useHistory, useLocation } from 'react-router-dom'
 //import { FiArrowLeft } from 'react-icons/fi'
 
 import NavBar from '../../components/NavBar';
@@ -10,39 +10,30 @@ import msgCamposInvalidos from '../../services/msgCamposInvalidos';
 
 import './styles.css'
 
-function LinkPrecos({ userRole, id }) {
-    if (userRole !== 'ROLE_GERENTE') return (<></>)
-    return (
-        <Link to={`/produtos/${id}/precos`} >
-            <button className="acao">Ver Preços</button>
-        </Link>
-    )
-}
-
 export default function DetalheProduto(props){
     const { id } = props.match.params
-    const [descricao, setDescricao] = useState('');
-    const [tipoUnidade, setTipoUnidade] = useState('');
-    const [preco, setPreco] = useState('');
+    const [pedido, setPedido] = useState({
+        cliente: {},
+        usuario: {},
+        itensPedido: []
+    });
 
     const userLogin = localStorage.getItem('userLogin')
     const userSenha = localStorage.getItem('userSenha')
     const userRole = localStorage.getItem('userRole')
 
     const history = useHistory()
+    const location = useLocation()
 
     useEffect(() => {
-        api.get(`produtos/${id}`, {
+        api.get(`pedidos/${id}`, {
             auth: {
                 username: userLogin,
                 password: userSenha
             }
         })
         .then((res) => {
-            const prod = res.data
-            setDescricao(prod.descricao)
-            setTipoUnidade(prod.tipoUnidade)
-            setPreco(prod.preco)
+            setPedido(res.data)
         })
         .catch(err => {
             alert('Erro ao buscar dados, tente novamente.')
@@ -51,18 +42,15 @@ export default function DetalheProduto(props){
     }, [id])
 
     function alterar() {
-        const data = { id, descricao, tipoUnidade, preco }
-        api.put(`produtos/${id}`, data, {
+        const data = pedido
+        api.put(`pedidos/${id}`, data, {
             auth: {
                 username: userLogin,
                 password: userSenha
             }
         })
         .then((res) => {
-            const prod = res.data
-            setDescricao(prod.descricao)
-            setTipoUnidade(prod.tipoUnidade)
-            setPreco(prod.preco)
+            
         })
         .catch(err => {
             alert(msgCamposInvalidos(err))
@@ -76,7 +64,7 @@ export default function DetalheProduto(props){
         if (!window.confirm('Tem certeza que deseja excluir este produto? Esta ação não pode ser revertida'))
             return;
 
-        api.delete(`produtos/${id}`, {
+        api.delete(`pedidos/${id}`, {
             auth: {
                 username: userLogin,
                 password: userSenha
@@ -84,7 +72,7 @@ export default function DetalheProduto(props){
         })
         .then(() => {
             alert('Produto excluído com sucesso')
-            history.push('/produtos')
+            history.push('/pedidos')
         })
         .catch((err) => {
             alert('Erro ao cadastrar caso, tente novamente.')
@@ -99,38 +87,61 @@ export default function DetalheProduto(props){
 
             <div className="content">
                
-                <h1>Detalhes do Produto</h1>
+                <h1>Detalhes do Pedido</h1>
 
                 <form >
                     <strong>ID:</strong>
                     <input 
-                        placeholder="Código do Produto"
-                        value={id}
+                        value={pedido.id}
                         readOnly
                     />
-                    <strong>DESCRIÇÃO DO PRODUTO:</strong>
+                    <strong>DATA DO PEDIDO:</strong>
                     <input 
-                        placeholder="Descrição do Produto"
-                        value={descricao}
-                        onChange={e => setDescricao(e.target.value)}
-                    />
-                    <strong>TIPO DA UNIDADE:</strong>
-                    <input
-                        placeholder="Tipo da Unidade"
-                        value={tipoUnidade}
-                        onChange={e => setTipoUnidade(e.target.value)}
-                    />
-                    <strong>PREÇO:</strong>
-                    <input 
-                        placeholder="Preço em reais"             
-                        value={ formatReal(preco) }
+                        value={pedido.dataCriacao}
                         readOnly
                     />
+                    <strong>PREÇO TOTAL:</strong>
+                    <input            
+                        value={ formatReal(pedido.precoTotal) }
+                        readOnly
+                    />
+                    <strong>ESTADO:</strong>
+                    <input            
+                        value={ pedido.estado }
+                        readOnly
+                    />
+                    <strong>NOME DO CLIENTE:</strong>
+                    <Link to={`../clientes/${pedido.cliente.id}`}>
+                    <input            
+                        value={ pedido.cliente.nome }
+                        readOnly
+                    />
+                    </Link>
+                    <strong>NOME DO VENDEDOR:</strong>
+                    <input            
+                        value={ pedido.usuario.nome }
+                        readOnly
+                    />
+                    <strong>ITENS DE PEDIDO:</strong>
+
+                    <ul className="entidades" >
+                        {pedido.itensPedido.map(itemPedido => (
+                            <li key={itemPedido.id}>
+                                <strong>DESCRIÇÃO DO PRODUTO:</strong>
+                                <p>{itemPedido.produto.descricao}</p>
+        
+                                <strong>PREÇO:</strong>
+                                <p>{ formatReal(itemPedido.preco) }</p>
+        
+                                <strong>QUANTIDADE:</strong>
+                                <p>{ itemPedido.qtde }</p>
+                            </li>
+                        ))}
+                    </ul>
 
                     <div className="botoes" >
                         <button className="acao" onClick={alterar}>Alterar</button>
                         <button className="acao" onClick={excluir}>Excluir</button>
-                        <LinkPrecos userRole={userRole} id={id} ></LinkPrecos>
                     </div>
                 </form>
             </div>

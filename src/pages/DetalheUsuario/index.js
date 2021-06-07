@@ -5,25 +5,18 @@ import { Link, useHistory } from 'react-router-dom'
 import NavBar from '../../components/NavBar';
 
 import api from '../../services/api'
-import formatReal from '../../services/formatReal';
 import msgCamposInvalidos from '../../services/msgCamposInvalidos';
 
 import './styles.css'
 
-function LinkPrecos({ userRole, id }) {
-    if (userRole !== 'ROLE_GERENTE') return (<></>)
-    return (
-        <Link to={`/produtos/${id}/precos`} >
-            <button className="acao">Ver Preços</button>
-        </Link>
-    )
-}
-
-export default function DetalheProduto(props){
+export default function DetalheUsuario(props){
     const { id } = props.match.params
-    const [descricao, setDescricao] = useState('');
-    const [tipoUnidade, setTipoUnidade] = useState('');
-    const [preco, setPreco] = useState('');
+    const [usuario, setUsuario] = useState({
+        id: '',
+        nome: '',
+        login: '',
+        nomeRole: 'ROLE_VENDEDOR'
+    })
 
     const userLogin = localStorage.getItem('userLogin')
     const userSenha = localStorage.getItem('userSenha')
@@ -32,17 +25,14 @@ export default function DetalheProduto(props){
     const history = useHistory()
 
     useEffect(() => {
-        api.get(`produtos/${id}`, {
+        api.get(`usuarios/${id}`, {
             auth: {
                 username: userLogin,
                 password: userSenha
             }
         })
         .then((res) => {
-            const prod = res.data
-            setDescricao(prod.descricao)
-            setTipoUnidade(prod.tipoUnidade)
-            setPreco(prod.preco)
+            setUsuario(res.data)
         })
         .catch(err => {
             alert('Erro ao buscar dados, tente novamente.')
@@ -51,22 +41,19 @@ export default function DetalheProduto(props){
     }, [id])
 
     function alterar() {
-        const data = { id, descricao, tipoUnidade, preco }
-        api.put(`produtos/${id}`, data, {
+        const data = usuario
+        api.put(`usuarios/${id}`, data, {
             auth: {
                 username: userLogin,
                 password: userSenha
             }
         })
         .then((res) => {
-            const prod = res.data
-            setDescricao(prod.descricao)
-            setTipoUnidade(prod.tipoUnidade)
-            setPreco(prod.preco)
+            setUsuario(res.data)
         })
         .catch(err => {
-            alert(msgCamposInvalidos(err))
             console.log(err)
+            alert(msgCamposInvalidos(err))
         }) 
     }
 
@@ -76,18 +63,18 @@ export default function DetalheProduto(props){
         if (!window.confirm('Tem certeza que deseja excluir este produto? Esta ação não pode ser revertida'))
             return;
 
-        api.delete(`produtos/${id}`, {
+        api.delete(`/usuarios/${id}`, {
             auth: {
                 username: userLogin,
                 password: userSenha
             }
         })
         .then(() => {
-            alert('Produto excluído com sucesso')
-            history.push('/produtos')
+            alert('Usuário excluído com sucesso')
+            history.push('/usuarios')
         })
         .catch((err) => {
-            alert('Erro ao cadastrar caso, tente novamente.')
+            alert('Erro ao excluir, tente novamente.')
             console.log(err);
         })
     }
@@ -99,38 +86,40 @@ export default function DetalheProduto(props){
 
             <div className="content">
                
-                <h1>Detalhes do Produto</h1>
+                <h1>Detalhes do Usuário</h1>
 
                 <form >
                     <strong>ID:</strong>
                     <input 
-                        placeholder="Código do Produto"
-                        value={id}
+                        value={usuario.id}
                         readOnly
                     />
-                    <strong>DESCRIÇÃO DO PRODUTO:</strong>
+                    <strong>NOME DO usuario:</strong>
                     <input 
-                        placeholder="Descrição do Produto"
-                        value={descricao}
-                        onChange={e => setDescricao(e.target.value)}
+                        value={usuario.nome}
+                        onChange={e => setUsuario({...usuario, nome: e.target.value})}
                     />
-                    <strong>TIPO DA UNIDADE:</strong>
+                    <strong>EMAIL:</strong>
                     <input
-                        placeholder="Tipo da Unidade"
-                        value={tipoUnidade}
-                        onChange={e => setTipoUnidade(e.target.value)}
+                        value={usuario.login}
+                        onChange={e => setUsuario({...usuario, login: e.target.value})}
                     />
-                    <strong>PREÇO:</strong>
-                    <input 
-                        placeholder="Preço em reais"             
-                        value={ formatReal(preco) }
-                        readOnly
-                    />
+                    {/* <strong>PERMISSÕES:</strong>
+                    <input
+                        value={usuario.nomeRole}
+                        onChange={e => setUsuario({...usuario, nomeRole: e.target.value})}
+                    /> */}
+                    <strong>PERMISSÕES:</strong>
+                    <select name="selecttipo" id="selecttipo" 
+                    value={usuario.nomeRole}
+                    onChange={e => setUsuario({...usuario, nomeRole: e.target.value})}>
+                        <option value="ROLE_VENDEDOR">VENDEDOR</option>
+                        <option value="ROLE_GERENTE">GERENTE</option>
+                    </select>
 
                     <div className="botoes" >
                         <button className="acao" onClick={alterar}>Alterar</button>
                         <button className="acao" onClick={excluir}>Excluir</button>
-                        <LinkPrecos userRole={userRole} id={id} ></LinkPrecos>
                     </div>
                 </form>
             </div>

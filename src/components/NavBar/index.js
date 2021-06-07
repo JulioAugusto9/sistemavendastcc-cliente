@@ -6,7 +6,7 @@ import './styles.css'
 function LinkUsuarios({ userRole }) {
     if (userRole !== 'ROLE_GERENTE') return (<></>)
     return (
-        <Link to="/produtos" className="link" >
+        <Link to="/usuarios" className="link" >
             <button type="button" >
                 Usuários
             </button>
@@ -29,12 +29,12 @@ export default function NavBar() {
     return (
         <div className="navigation-bar" >
             <ul>
-                <Link to="/produtos" className="link" >
+                <Link to="/clientes" className="link" >
                     <button type="button" >
                         Clientes
                     </button>
                 </Link>
-                <Link to="/produtos" className="link" >
+                <Link to="/pedidos" className="link" >
                     <button type="button" >
                         Pedidos
                     </button>

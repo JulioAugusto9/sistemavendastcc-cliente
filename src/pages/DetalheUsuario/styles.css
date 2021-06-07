@@ -10,19 +10,6 @@
     justify-content: center;
 }
 
-.cadastro-container .appname {
-    height: 20vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-}
-
-.cadastro-container .appname h1 {
-    font-size: 44px;
-    color: #e02041;
-    font-style: italic;
-}
-
 .cadastro-container .content{
     width: 100%;
     padding: 96px;
@@ -49,9 +36,16 @@
     width: 100%;
 }
 
-.cadastro-container .content form input,
+/* .cadastro-container .content form input,
 .cadastro-container .content form textarea {
     margin-top: 24px;
+} */
+
+.cadastro-container .content form strong {
+    display: block;
+    margin-bottom: 0px;
+    color: #41414d;
+    margin-top: 32px;
 }
 
 .botoes {

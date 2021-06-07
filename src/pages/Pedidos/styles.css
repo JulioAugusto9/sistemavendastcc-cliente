@@ -1,0 +1,89 @@
+.listagem-container {
+    width: 100%;
+    width: 1180px;
+    padding: 0 30px;
+    margin: 32px auto;
+}
+
+.listagem-container header {
+    display: flex;
+    align-items: center;
+}
+
+.listagem-container header span {
+    font-size: 20px;
+    margin-left: 24px;
+}
+
+.listagem-container header img {
+    height: 64px;
+}
+
+.listagem-container header a {
+    width: 260px;
+    margin-left: auto;
+    margin-top: 0;
+}
+
+.listagem-container header button {
+    height: 60px;
+    width: 60px;
+    border-radius: 4px;
+    border: 1px solid #dcdce6;
+    background: transparent;
+    margin-left: 16px;
+    transition: border-color 0.2s;
+}
+
+.listagem-container header button:hover{
+    border-color: #999;
+}
+
+.listagem-container h1 {
+    margin-top: 80px;
+    margin-bottom: 24px;
+}
+
+.listagem-container .entidades {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 24px;
+    list-style: none;
+}
+
+.listagem-container .entidades li {
+    background-color: #FFF;
+    padding: 24px;
+    border-radius: 8px;
+    position: relative;
+}
+
+.listagem-container .entidades li button {
+    position: absolute;
+    right: 24px;
+    top: 24px;
+    border: 0;
+    background: transparent;
+}
+
+.listagem-container .entidades li button:hover {
+    opacity: 0.8;
+}
+
+.listagem-container .entidades li strong {
+    display: block;
+    margin-bottom: 16px;
+    color: #41414d;
+}
+
+.listagem-container .entidades li p + strong {
+    margin-top: 32px;
+}
+
+.listagem-container .entidades li p {
+    color: #737380;
+    line-height: 21px;
+    font-size: 16px;
+}
+
+

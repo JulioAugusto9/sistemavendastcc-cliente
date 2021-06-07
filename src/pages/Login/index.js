@@ -26,6 +26,7 @@ export default function NovoProduto(){
         .then((res) => {
             const user = res.data
 
+            localStorage.setItem('userId', user.id)
             localStorage.setItem('userLogin', user.login)
             localStorage.setItem('userSenha', user.senha)
             localStorage.setItem('userRole', user.nomeRole)
@@ -49,7 +50,7 @@ export default function NovoProduto(){
 
                 <form onSubmit={handleLogin}>
                     <input 
-                        placeholder="Login"
+                        placeholder="Email"
                         value={login}
                         onChange={e => setLogin(e.target.value)}
                     />
@@ -57,9 +58,19 @@ export default function NovoProduto(){
                         placeholder="Senha"             
                         value={senha}
                         onChange={e => setSenha(e.target.value)}
+                        type="password"
                     />
 
                     <button className="button" type="submit">Entrar</button>
+
+                    <div className="botoes">
+                        <Link to="/usuarios/novo" >
+                            <button className="acao" >Não possuo conta</button>
+                        </Link>
+                        <Link to="/alterarsenha">
+                            <button className="acao" >Esqueci minha senha</button>
+                        </Link>
+                    </div>
                 </form>
             </div>
         </div>

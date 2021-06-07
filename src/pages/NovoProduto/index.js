@@ -36,7 +36,7 @@ export default function NovoProduto(){
                     password: userSenha
                 }
             }) 
-
+            alert('Produto cadastrado com sucesso')
             history.push('/produtos')
         } catch (err){
             alert(msgCamposInvalidos(err))
@@ -57,7 +57,7 @@ export default function NovoProduto(){
                         value={descricao}
                         onChange={e => setDescricao(e.target.value)}
                     />
-                    <textarea 
+                    <input
                         placeholder="Tipo da Unidade"
                         value={tipoUnidade}
                         onChange={e => setTipoUnidade(e.target.value)}
