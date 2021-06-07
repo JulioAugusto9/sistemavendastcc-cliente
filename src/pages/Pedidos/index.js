@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react'
-import { Link, useHistory } from 'react-router-dom'
+import { Link, useHistory, useLocation } from 'react-router-dom'
 //import { FiPower, FiTrash2 } from 'react-icons/fi'
 
 import api from '../../services/api'
@@ -18,10 +18,13 @@ export default function Pedidos() {
     const [pagina, setPagina] = useState(1)
     const [totalPaginas, setTotalPaginas] = useState(1)
 
+    const [ehOrcamento, setEhOrcamento] = useState(false)
+
     const userLogin = localStorage.getItem('userLogin')
     const userSenha = localStorage.getItem('userSenha')
 
     const history = useHistory()
+    const location = useLocation()
 
     function getPedidos(descrFiltro, pageFiltro) {
         let reqParams = {}
@@ -32,6 +35,8 @@ export default function Pedidos() {
             reqParams['page'] = pageFiltro
         }
         reqParams['itemsPerPage'] = 6
+
+        if (location.pathname.indexOf('orcamento') !== -1) reqParams['estado'] = 'ORCAMENTO'
 
         api.get('pedidos', 
             {
@@ -53,8 +58,9 @@ export default function Pedidos() {
     }
 
     useEffect(() => {
+        //setEhOrcamento(location.pathname.indexOf('orcamento') === -1)
         getPedidos(descricao, pagina)
-    }, [pagina])
+    }, [pagina, location])
 
     return (
         <>

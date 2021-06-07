@@ -39,6 +39,11 @@ export default function NavBar() {
                         Pedidos
                     </button>
                 </Link>
+                <Link to="/orcamentos" className="link" >
+                    <button type="button" >
+                        Orçamentos
+                    </button>
+                </Link>
                 <Link to="/produtos" className="link" >
                     <button type="button" >
                         Produtos

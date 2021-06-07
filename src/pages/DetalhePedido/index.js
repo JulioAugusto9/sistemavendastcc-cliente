@@ -18,6 +18,10 @@ export default function DetalheProduto(props){
         itensPedido: []
     });
 
+    const [produtos, setProdutos] = useState([])
+    const [produtoDescr, setProdutoDescr] = useState('')
+    const [qtde, setQtde] = useState('')
+
     const userLogin = localStorage.getItem('userLogin')
     const userSenha = localStorage.getItem('userSenha')
     const userRole = localStorage.getItem('userRole')
@@ -40,6 +44,14 @@ export default function DetalheProduto(props){
             console.log(err)
         }) 
     }, [id])
+
+    function addProduto() {
+
+    }
+
+    function removeProduto() {
+
+    }
 
     function alterar() {
         const data = pedido
@@ -105,6 +117,11 @@ export default function DetalheProduto(props){
                         value={ formatReal(pedido.precoTotal) }
                         readOnly
                     />
+                    <strong>DESCONTO:</strong>
+                    <input            
+                        value={ formatReal(pedido.desconto) }
+                        readOnly
+                    />
                     <strong>ESTADO:</strong>
                     <input            
                         value={ pedido.estado }
@@ -122,6 +139,28 @@ export default function DetalheProduto(props){
                         value={ pedido.usuario.nome }
                         readOnly
                     />
+
+                    <div className="addProduto" >
+                        <input 
+                            placeholder="Descrição do Produto"
+                            list="produtos" autoComplete="on"
+                            value={produtoDescr}
+                            onChange={e => setProdutoDescr(e.target.value)}
+                        />
+                        <datalist id="produtos" >
+                            {produtos.map(produto => (
+                                <option key={produto.id} value={produto.descricao+ ' ' + formatReal(produto.preco)} />
+                            ))}
+                        </datalist>
+                        <input 
+                            placeholder="Quantidade"
+                            value={qtde}
+                            onChange={e => setQtde(e.target.value)}
+                            type="number"
+                        />
+                        <button onClick={addProduto}>Adicionar Produto</button>
+                    </div>
+
                     <strong>ITENS DE PEDIDO:</strong>
 
                     <ul className="entidades" >
@@ -135,6 +174,10 @@ export default function DetalheProduto(props){
         
                                 <strong>QUANTIDADE:</strong>
                                 <p>{ itemPedido.qtde }</p>
+
+                                <button type="button" onClick={() => removeProduto(itemPedido.idLocal)}>
+                                    Remover 
+                                </button>
                             </li>
                         ))}
                     </ul>
@@ -142,6 +185,14 @@ export default function DetalheProduto(props){
                     <div className="botoes" >
                         <button className="acao" onClick={alterar}>Alterar</button>
                         <button className="acao" onClick={excluir}>Excluir</button>
+                        <Link to={`${location.pathname}/imprimir`}>
+                        <button className="acao" >Imprimir</button>
+                        </Link>
+                        <button className="acao" >Transformar em Pedido</button>
+                        {/* <button className="acao" onClick={()=>1==1}>Faturar</button> */}
+                        <Link to={`${location.pathname}/imprimirnotafiscal`}>
+                        <button className="acao" >Imprimir Nota Fiscal</button>
+                        </Link>
                     </div>
                 </form>
             </div>
