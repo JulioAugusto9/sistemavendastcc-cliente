@@ -25,6 +25,7 @@ function CamposDeTipo({ tipoCliente, cliente, setCliente }) {
             placeholder="Data de Nascimento"
             value={cliente.dataNascimento}
             onChange={e => setCliente({ ...cliente, dataNascimento: e.target.value})}
+            onFocus={e => e.target.type='date'}
         />
     </>)
     else return (<>
@@ -42,6 +43,7 @@ function CamposDeTipo({ tipoCliente, cliente, setCliente }) {
             placeholder="Data de Fundação"
             value={cliente.dataFundacao}
             onChange={e => setCliente({ ...cliente, dataFundacao: e.target.value})}
+            onFocus={e => e.target.type='date'}
         />
     </>)
 }
@@ -110,6 +112,7 @@ export default function NovoCliente(){
                         placeholder="Email"
                         value={cliente.email}
                         onChange={e => setCliente({ ...cliente, email: e.target.value})}
+                        type="email"
                     />
                     <input 
                         placeholder="Telefone"             

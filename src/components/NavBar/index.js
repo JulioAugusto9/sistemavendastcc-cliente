@@ -16,6 +16,7 @@ function LinkUsuarios({ userRole }) {
 
 export default function NavBar() {
 
+    const userId = localStorage.getItem('userId')
     const userRole = localStorage.getItem('userRole')
 
     const history = useHistory()
@@ -50,7 +51,12 @@ export default function NavBar() {
                     </button>
                 </Link>
                 <LinkUsuarios userRole={userRole} ></LinkUsuarios>
-                <button onClick={handleLogout} type="button" >
+                <Link to={`/usuarios/${userId}`} className="link totheleft" >
+                    <button type="button" >
+                        Conta
+                    </button>
+                </Link>
+                <button onClick={handleLogout}  className="link" type="button" >
                     Sair
                 </button>
             </ul>

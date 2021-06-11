@@ -5,73 +5,14 @@ import { Link, useHistory, useLocation } from 'react-router-dom'
 import NavBar from '../../components/NavBar';
 
 import api from '../../services/api'
+import formatDate from '../../services/formatDate';
 import formatReal from '../../services/formatReal';
 import msgCamposInvalidos from '../../services/msgCamposInvalidos';
 import parseReal from '../../services/parseReal';
-import formatDate from '../../services/formatDate'
 
 import './styles.css'
 
-function ShowAddProduto({pedido, produtos, produtoDescr, setProdutoDescr, qtde, setQtde, addProduto}) {
-    if (pedido.estado === 'FATURADO')
-        return <></>
-    
-    return (
-        <div className="addProduto" >
-            <input 
-                placeholder="Descrição do Produto"
-                list="produtos" autoComplete="on"
-                value={produtoDescr}
-                onChange={e => setProdutoDescr(e.target.value)}
-            />
-            <datalist id="produtos" >
-                {produtos.map(produto => (
-                    <option key={produto.id} value={produto.descricao+ ' ' + formatReal(produto.preco)} />
-                ))}
-            </datalist>
-            <input 
-                placeholder="Quantidade"
-                value={qtde}
-                onChange={e => setQtde(e.target.value)}
-                type="number"
-            />
-            <button onClick={addProduto}>Adicionar Produto</button>
-        </div>
-    )
-}
-
-function ShowExcluirProduto({pedido, itemPedido, removeProduto}) {
-    if (pedido.estado === 'FATURADO') 
-        return <></>
-
-    return (
-        <button type="button" onClick={() => removeProduto(itemPedido.id)}>
-            Excluir 
-        </button>
-    )
-}
-
-function ShowExcluir({pedido, excluir}) {
-    if (pedido.estado === 'FATURADO')
-        return <></>
-    
-    return (
-        <button className="acao" onClick={excluir}>Excluir</button>
-    )
-}
-
-function BotoesEspecificos({pedido, faturar, location}) {
-    if (pedido.estado === 'FATURADO')
-        return (<Link to={`${location.pathname}/imprimirnotafiscal`}>
-                    <button className="acao" >Imprimir Nota Fiscal</button>
-                </Link>)
-    if (pedido.estado === 'ABERTO')
-        return <button className="acao" onClick={faturar}>Faturar</button>  
-    
-    return <></>
-}
-
-export default function DetalheProduto(props){
+export default function DetalheOrcamento(props){
     const { id } = props.match.params
     const [pedido, setPedido] = useState({
         cliente: {},
@@ -163,7 +104,7 @@ export default function DetalheProduto(props){
                 setQtde('')
             })
             .catch((err) => {
-                alert('Erro ao adicionar item de pedido, tente novamente.')
+                alert('Erro ao adicionar item, tente novamente.')
                 console.log(err)
             })
         })
@@ -174,7 +115,7 @@ export default function DetalheProduto(props){
     }
 
     function removeProduto(itemPedId) {
-        if (!window.confirm('Tem certeza que deseja excluir este item de pedido? Esta ação não pode ser revertida'))
+        if (!window.confirm('Tem certeza que deseja excluir este item? Esta ação não pode ser revertida'))
             return;
 
         api.delete(`pedidos/${id}/itempedido/${itemPedId}`, {
@@ -187,7 +128,7 @@ export default function DetalheProduto(props){
             setPedido(res.data)
         })
         .catch((err) => {
-            alert('Erro ao excluir item de pedido, tente novamente.')
+            alert('Erro ao excluir item, tente novamente.')
             console.log(err)
         })
     }
@@ -212,7 +153,7 @@ export default function DetalheProduto(props){
     function excluir(event) {
         event.preventDefault()
 
-        if (!window.confirm('Tem certeza que deseja excluir este pedido? Esta ação não pode ser revertida'))
+        if (!window.confirm('Tem certeza que deseja excluir este orçamento? Esta ação não pode ser revertida'))
             return;
 
         api.delete(`pedidos/${id}`, {
@@ -226,28 +167,28 @@ export default function DetalheProduto(props){
             history.push('/pedidos')
         })
         .catch((err) => {
-            alert('Erro ao cadastrar caso, tente novamente.')
+            alert('Erro ao excluir orçamento, tente novamente.')
             console.log(err);
         })
     }
 
-    function faturar(e) {
+    function transformarEmPedido(e) {
         e.preventDefault()
 
-        api.post(`pedidos/${id}/fatura`, {}, {
+        api.post(`pedidos/${id}/abertura`, {}, {
             auth: {
                 username: userLogin,
                 password: userSenha
             }
         })
-        .then(res => {
-            setPedido({...pedido, estado: 'FATURADO'})
-            alert('Pedido faturado com sucesso!')
+        .then(() => {
+            alert('Orçamento transformado em pedido com sucesso')
+            history.replace(`../pedidos/${id}`)
         })
-        .catch(err => {
-            alert('Erro ao faturar pedido, tente novamente.')
-            console.log(err)
-        }) 
+        .catch((err) => {
+            console.log(err);
+            alert('Erro ao transformar em pedido, tente novamente.')
+        })
     }
 
     return (
@@ -257,7 +198,7 @@ export default function DetalheProduto(props){
 
             <div className="content">
                
-                <h1>Detalhes do Pedido</h1>
+                <h1>Detalhes do Orçamento</h1>
 
                 <form >
                     <strong>ID:</strong>
@@ -265,7 +206,7 @@ export default function DetalheProduto(props){
                         value={pedido.id}
                         readOnly
                     />
-                    <strong>DATA DO PEDIDO:</strong>
+                    <strong>DATA DO ORÇAMENTO:</strong>
                     <input 
                         value={formatDate(pedido.dataCriacao)}
                         readOnly
@@ -278,11 +219,6 @@ export default function DetalheProduto(props){
                     <strong>DESCONTO:</strong>
                     <input            
                         value={ formatReal(pedido.desconto) }
-                        readOnly
-                    />
-                    <strong>ESTADO:</strong>
-                    <input            
-                        value={ pedido.estado }
                         readOnly
                     />
                     <strong>NOME DO CLIENTE:</strong>
@@ -298,15 +234,26 @@ export default function DetalheProduto(props){
                         readOnly
                     />
 
-                    <ShowAddProduto
-                        pedido={pedido}
-                        produtos={produtos}
-                        produtoDescr={produtoDescr}
-                        setProdutoDescr={setProdutoDescr}
-                        qtde={qtde}
-                        setQtde={setQtde}
-                        addProduto={addProduto}
-                    ></ShowAddProduto>
+                    <div className="addProduto" >
+                        <input 
+                            placeholder="Descrição do Produto"
+                            list="produtos" autoComplete="on"
+                            value={produtoDescr}
+                            onChange={e => setProdutoDescr(e.target.value)}
+                        />
+                        <datalist id="produtos" >
+                            {produtos.map(produto => (
+                                <option key={produto.id} value={produto.descricao+ ' ' + formatReal(produto.preco)} />
+                            ))}
+                        </datalist>
+                        <input 
+                            placeholder="Quantidade"
+                            value={qtde}
+                            onChange={e => setQtde(e.target.value)}
+                            type="number"
+                        />
+                        <button onClick={addProduto}>Adicionar Produto</button>
+                    </div>
 
                     <strong>ITENS DE PEDIDO:</strong>
 
@@ -322,30 +269,20 @@ export default function DetalheProduto(props){
                                 <strong>QUANTIDADE:</strong>
                                 <p>{ itemPedido.qtde }</p>
 
-                                <ShowExcluirProduto
-                                    pedido={pedido}
-                                    itemPedido={itemPedido}
-                                    removeProduto={removeProduto}
-                                ></ShowExcluirProduto>
+                                <button type="button" onClick={() => removeProduto(itemPedido.id)}>
+                                    Excluir 
+                                </button>
                             </li>
                         ))}
                     </ul>
 
                     <div className="botoes" >
                         {/* <button className="acao" onClick={alterar}>Alterar</button> */}
-                        <ShowExcluir
-                            pedido={pedido}
-                            excluir={excluir}
-                        ></ShowExcluir>
+                        <button className="acao" onClick={excluir}>Excluir</button>
                         <Link to={`${location.pathname}/imprimir`}>
                             <button className="acao" >Imprimir</button>
                         </Link>
-                        {/* <button className="acao" >Transformar em Pedido</button> */}
-                        <BotoesEspecificos
-                            pedido={pedido}
-                            faturar={faturar}
-                            location={location}
-                        ></BotoesEspecificos>
+                        <button className="acao" onClick={transformarEmPedido}>Transformar em Pedido</button>
                     </div>
                 </form>
             </div>

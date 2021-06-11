@@ -7,6 +7,7 @@ import './styles.css'
 
 import PageIndex from '../../components/PageIndex'
 import NavBar from '../../components/NavBar'
+import formatDate from '../../services/formatDate'
 
 //import logoImg from '../../assets/logo.svg'
 
@@ -108,6 +109,7 @@ export default function PrecosProduto(props) {
                         placeholder="Data de efetivação"
                         value={dataCriacao}
                         onChange={e => setDataCriacao(e.target.value)}
+                        onFocus={e => e.target.type='date'}
                     />
                     <input 
                         placeholder="Preço"
@@ -122,7 +124,7 @@ export default function PrecosProduto(props) {
                 {precos.map(preco => (
                     <li key={preco.id}>
                         <strong>DATA DE EFETIVAÇÃO DO PREÇO:</strong>
-                        <p>{preco.dataCriacao}</p>
+                        <p>{formatDate(preco.dataCriacao)}</p>
 
                         <strong>PREÇO:</strong>
                         <p>{ Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(preco.preco) }</p>

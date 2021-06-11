@@ -169,7 +169,7 @@ export default function NovoPedido(){
 
         try{
             await api.post(`pedidos`, data, {
-                params: reqParams,
+                reqParams,
                 auth: {
                     username: userLogin,
                     password: userSenha

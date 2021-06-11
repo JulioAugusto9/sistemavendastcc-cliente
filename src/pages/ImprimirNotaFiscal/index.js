@@ -2,6 +2,7 @@ import React, {useState, useEffect } from 'react'
 import { Link, useHistory, useLocation } from 'react-router-dom'
 
 import api from '../../services/api'
+import formatDate from '../../services/formatDate';
 import formatPercent from '../../services/formatPercent';
 import formatReal from '../../services/formatReal';
 
@@ -50,7 +51,7 @@ function CamposDeTipo({ pedido }) {
     </>)
 }
 
-export default function DetalheProduto(props){
+export default function ImprimirNotaFiscal(props){
     const { id } = props.match.params
     const [pedido, setPedido] = useState({
         cliente: {},
@@ -58,14 +59,8 @@ export default function DetalheProduto(props){
         itensPedido: []
     });
 
-    const [notaFiscal, setNotaFiscal] = useState({
-        cfop: 5102,
-        natop: 'Venda de mercadorias',
-        uniao: '2,86',
-        icms: '1,36',
-        subtriicms: '2,02',
-        totaltributos: '6,24'
-    })
+    const [notaFiscal, setNotaFiscal] = useState({})
+    const [empresa, setEmpresa] = useState({})
 
     const userLogin = localStorage.getItem('userLogin')
     const userSenha = localStorage.getItem('userSenha')
@@ -74,7 +69,8 @@ export default function DetalheProduto(props){
     const history = useHistory()
 
     useEffect(() => {
-        api.get(`pedidos/${id}`, {
+        const promises = []
+        promises.push(api.get(`pedidos/${id}`, {
             auth: {
                 username: userLogin,
                 password: userSenha
@@ -82,17 +78,43 @@ export default function DetalheProduto(props){
         })
         .then((res) => {
             setPedido(res.data)
+        })) 
+
+        promises.push(api.get(`pedidos/${id}/notafiscal`, {
+            auth: {
+                username: userLogin,
+                password: userSenha
+            }
+        })
+        .then((res) => {
+            setNotaFiscal(res.data)
+        }))
+
+        promises.push(api.get('pedidos/empresa', {
+            auth: {
+                username: userLogin,
+                password: userSenha
+            }
+        })
+        .then((res) => {
+            setEmpresa(res.data)
+        }))
+
+        Promise.all(promises)
+        .then(values => {
+            window.print()
         })
         .catch(err => {
             alert('Erro ao buscar dados, tente novamente.')
             console.log(err)
-        }) 
+        })
+
     }, [id])
 
-    useEffect(() => {
-        if (pedido.id !== undefined)
-            window.print()
-    }, [pedido])
+    // useEffect(() => {
+    //     if (pedido.id !== undefined)
+    //         window.print()
+    // }, [pedido])
 
     return (
         <div className="cadastro-container">
@@ -102,11 +124,11 @@ export default function DetalheProduto(props){
                 <h1>Nota Fiscal</h1>
 
                 <form >
-                    <strong>EMPRESA: ALPES MATERIAIS DE CONSTRUÇÃO</strong>   
-                    <strong>RUA AQUIDABAN, 660</strong>   
-                    <strong>VILA LEÃO - SOROCABA - SP</strong>   
-                    <strong>(15)4200-000</strong>   
-                    <strong>CNPJ: 23456172854</strong>   
+                    <strong>EMPRESA: {empresa.nome}</strong>   
+                    <strong>{empresa.endereco1}</strong>   
+                    <strong>{empresa.endereco2}</strong>   
+                    <strong>{empresa.telefone}</strong>   
+                    <strong>CNPJ: {empresa.cnpj}</strong>   
                     
                     <strong>ID:</strong>
                     <input 
@@ -115,7 +137,12 @@ export default function DetalheProduto(props){
                     />
                     <strong>DATA DO PEDIDO:</strong>
                     <input 
-                        value={pedido.dataCriacao}
+                        value={formatDate(pedido.dataCriacao)}
+                        readOnly
+                    />
+                    <strong>DATA DE EMISSÂO DA NOTA FISCAL:</strong>
+                    <input 
+                        value={formatDate(notaFiscal.dataInclusao)}
                         readOnly
                     />
                     <strong>CFOP:</strong>
@@ -125,7 +152,7 @@ export default function DetalheProduto(props){
                     />
                     <strong>NATUREZA DA OPERAÇÃO</strong>
                     <input 
-                        value={notaFiscal.natop}
+                        value={notaFiscal.natOp}
                         readOnly
                     />
                     <strong>NOME DO CLIENTE:</strong>
@@ -223,17 +250,17 @@ export default function DetalheProduto(props){
                     />
                     <strong>Estado - Substituição Tributária do ICMS:</strong>
                     <input             
-                        value={formatPercent(notaFiscal.subtriicms)}
+                        value={formatPercent(notaFiscal.subTriIcms)}
                         readOnly
                     />
                     <strong>TOTAL TRUBUTOS:</strong>
                     <input             
-                        value={formatPercent(notaFiscal.totaltributos)}
+                        value={formatPercent(notaFiscal.totalTributos)}
                         readOnly
                     />
                     <strong>VALOR A PAGAR:</strong>
                     <input             
-                        value={'R$ 92,26'}
+                        value={formatReal(notaFiscal.valPagar)}
                         readOnly
                     />
                     

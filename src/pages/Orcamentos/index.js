@@ -13,9 +13,9 @@ import formatDate from '../../services/formatDate'
 
 //import logoImg from '../../assets/logo.svg'
 
-export default function Pedidos() {
+export default function Orcamentos() {
     const [pedidos, setPedidos] = useState([])
-    const [filtro, setFiltro] = useState('')
+    const [descricao, setDescricao] = useState('')
     const [pagina, setPagina] = useState(1)
     const [totalPaginas, setTotalPaginas] = useState(1)
 
@@ -30,13 +30,13 @@ export default function Pedidos() {
     function getPedidos(descrFiltro, pageFiltro) {
         let reqParams = {}
         if (descrFiltro !== '') {
-            reqParams['estado'] = descrFiltro
+            reqParams['descricao'] = descrFiltro
         }
         if (pageFiltro !== '') {
             reqParams['page'] = pageFiltro
         }
         reqParams['itemsPerPage'] = 6
-        
+        reqParams['estado'] = 'ORCAMENTO'
         // if (location.pathname.indexOf('orcamento') !== -1) reqParams['estado'] = 'ORCAMENTO'
 
         api.get('pedidos', 
@@ -60,7 +60,7 @@ export default function Pedidos() {
 
     useEffect(() => {
         //setEhOrcamento(location.pathname.indexOf('orcamento') === -1)
-        getPedidos(filtro, pagina)
+        getPedidos(descricao, pagina)
     }, [pagina])
 
     return (
@@ -68,22 +68,17 @@ export default function Pedidos() {
         <div className="listagem-container">
             <NavBar></NavBar>
             <header>
-                <h1>Pedidos cadastrados</h1>
-                <Link className="button" to="/pedidos/novo">Cadastrar novo pedido</Link>
+                <h1>Orcamentos cadastrados</h1>
+                <Link className="button" to="/orcamentos/novo">Cadastrar novo orçamento</Link>
             </header>
 
-            <BarraPesquisa 
-                placeholder="Estado do Pedido"
-                filtro={filtro} 
-                setFiltro={(fil) => setFiltro(fil.toUpperCase())} 
+            {/* <BarraPesquisa 
+                placeholder=""
+                filtro={descricao} 
+                setFiltro={setDescricao} 
                 getEntidades={getPedidos}
                 setPagina={setPagina}
-                listdata={"estadosdepedido"}
-            ></BarraPesquisa>
-            <datalist id="estadosdepedido">
-                <option value="ABERTO"></option>
-                <option value="FATURADO"></option>
-            </datalist>
+            ></BarraPesquisa> */}
 
             <ul className="entidades" >
                 {pedidos.map(pedido => (
@@ -91,14 +86,11 @@ export default function Pedidos() {
                         <strong>ID:</strong>
                         <p>{pedido.id}</p>
 
-                        <strong>DATA DO PEDIDO:</strong>
+                        <strong>DATA DO ORÇAMENTO:</strong>
                         <p>{formatDate(pedido.dataCriacao)}</p>
 
                         <strong>PREÇO TOTAL:</strong>
                         <p>{ formatReal(pedido.precoTotal) }</p>
-
-                        <strong>ESTADO:</strong>
-                        <p>{pedido.estado}</p>
 
                         <strong>NOME DO CLIENTE:</strong>
                         <p>{pedido.cliente.nome}</p>
@@ -106,7 +98,7 @@ export default function Pedidos() {
                         <strong>NOME DO VENDEDOR:</strong>
                         <p>{pedido.usuario.nome}</p>
 
-                        <Link to={`pedidos/${pedido.id}`}>
+                        <Link to={`orcamentos/${pedido.id}`}>
                             <button className="acao" type="button">
                                 Detalhes  
                             </button>

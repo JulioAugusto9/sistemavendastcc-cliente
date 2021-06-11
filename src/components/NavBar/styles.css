@@ -27,7 +27,6 @@
     transition: border-color 0.2s;
 }
 
-.navigation-bar ul button:last-child {
-    margin-left: auto;
-    
+.navigation-bar ul .totheleft {
+    margin-left: auto;  
 }

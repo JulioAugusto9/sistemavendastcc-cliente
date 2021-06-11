@@ -10,6 +10,12 @@ import parseReal from '../../services/parseReal';
 
 import './styles.css'
 
+function ShowNavBar({userLogin}) {
+    if (userLogin == null) return <></>
+
+    return <NavBar></NavBar>
+}
+
 export default function NovoUsuario(){
     const [usuario, setUsuario] = useState({})
     const [senhaConfirm, setSenhaConfirm] = useState('')
@@ -19,7 +25,7 @@ export default function NovoUsuario(){
 
     const history = useHistory()
 
-    async function handleNovoUsuario(e) {
+    function handleNovoUsuario(e) {
         e.preventDefault()
         if (usuario.senha !== senhaConfirm) {
             alert('As duas senhas digitadas devem ser iguais')
@@ -28,27 +34,37 @@ export default function NovoUsuario(){
 
         const data = {...usuario, nomeRole: 'ROLE_VENDEDOR'}
 
-        try{
-            await api.post('usuarios', data, {
-                auth: {
-                    username: userLogin,
-                    password: userSenha
-                }
-            }) 
+        // let auth = {};
+        // if (userLogin !== null) {
+        //     auth['username'] = userLogin
+        //     auth['password'] = userSenha
+        // }
+        
+        api.post('usuarios', data)
+        .then(res => {
+            const user = res.data
             alert('Usuário cadastrado com sucesso')
-            history.push('/usuarios')
-        } catch (err){
+            localStorage.setItem('userId', user.id)
+            localStorage.setItem('userLogin', user.login)
+            localStorage.setItem('userSenha', user.senha)
+            localStorage.setItem('userRole', user.nomeRole)
+            history.push('/')
+        }) 
+        .catch ((err) => {
             alert(msgCamposInvalidos(err))
             console.log(err);
-        }
+        })
+            
     }
 
     return (
         <div className="cadastro-container">
-            <NavBar></NavBar>
+            <ShowNavBar
+                userLogin={userLogin}
+            ></ShowNavBar>
             <div className="content">
                 
-                <h1>Cadastrar novo Usuário</h1>
+                <h1>Cadastrar nova conta</h1>
 
                 <form onSubmit={handleNovoUsuario}>
                     <input 

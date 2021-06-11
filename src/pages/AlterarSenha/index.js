@@ -22,6 +22,8 @@ export default function NovoProduto(){
             senha
         }
 
+        alert('Enviaremos um email para que possa redefinir sua senha')
+
     }
 
     return (
@@ -40,7 +42,7 @@ export default function NovoProduto(){
                         onChange={e => setLogin(e.target.value)}
                     />
 
-                    <button className="button" type="submit">Receber email com nova senha temporária</button>
+                    <button className="button" type="submit">Redefinir</button>
                 </form>
             </div>
         </div>

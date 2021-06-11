@@ -18,6 +18,9 @@ import DetalhePedido from './pages/DetalhePedido'
 import ImprimirPedido from './pages/ImprimirPedido'
 import ImprimirNotaFiscal from './pages/ImprimirNotaFiscal'
 
+import Orcamentos from './pages/Orcamentos'
+import DetalheOrcamento from './pages/DetalheOrcamento'
+
 import Clientes from './pages/Clientes'
 import NovoCliente from './pages/NovoCliente'
 import DetalheCliente from './pages/DetalheCliente'
@@ -47,9 +50,9 @@ export default function Routes() {
                 <Route path="/pedidos/:id/imprimir" exact component={ImprimirPedido}/>
                 <Route path="/pedidos/:id/imprimirnotafiscal" exact component={ImprimirNotaFiscal}/>
 
-                <Route path="/orcamentos" exact component={Pedidos}/>
+                <Route path="/orcamentos" exact component={Orcamentos}/>
                 <Route path="/orcamentos/novo" exact component={NovoPedido}/>
-                <Route path="/orcamentos/:id" exact component={DetalhePedido}/>
+                <Route path="/orcamentos/:id" exact component={DetalheOrcamento}/>
                 <Route path="/orcamentos/:id/imprimir" exact component={ImprimirPedido}/>
 
                 <Route path="/clientes" exact component={Clientes}/>

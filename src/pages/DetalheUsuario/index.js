@@ -9,6 +9,39 @@ import msgCamposInvalidos from '../../services/msgCamposInvalidos';
 
 import './styles.css'
 
+function CampoGerenteVe({userRole, usuario, setUsuario}) {
+    if (userRole === 'ROLE_GERENTE')
+        return (
+            <>
+            <strong>PERMISSÕES:</strong>
+            <select name="selecttipo" id="selecttipo" 
+            value={usuario.nomeRole}
+            onChange={e => setUsuario({...usuario, nomeRole: e.target.value})}>
+                <option value="ROLE_VENDEDOR">VENDEDOR</option>
+                <option value="ROLE_GERENTE">GERENTE</option>
+            </select>
+            </>
+        )
+    
+    return <></>
+}
+
+function CampoDonoContaVe({userId, id, usuario, setUsuario}) {
+    if (userId  == id)
+        return (
+            <>
+            <strong>SENHA:</strong>
+            <input
+                value={usuario.senha}
+                onChange={e => setUsuario({...usuario, login: e.target.value})}
+                type="password"
+            />
+            </>
+        )
+
+    return <></>
+}
+
 export default function DetalheUsuario(props){
     const { id } = props.match.params
     const [usuario, setUsuario] = useState({
@@ -18,6 +51,7 @@ export default function DetalheUsuario(props){
         nomeRole: 'ROLE_VENDEDOR'
     })
 
+    const userId = localStorage.getItem('userId')
     const userLogin = localStorage.getItem('userLogin')
     const userSenha = localStorage.getItem('userSenha')
     const userRole = localStorage.getItem('userRole')
@@ -94,7 +128,7 @@ export default function DetalheUsuario(props){
                         value={usuario.id}
                         readOnly
                     />
-                    <strong>NOME DO usuario:</strong>
+                    <strong>NOME DO USUÁRIO:</strong>
                     <input 
                         value={usuario.nome}
                         onChange={e => setUsuario({...usuario, nome: e.target.value})}
@@ -109,13 +143,18 @@ export default function DetalheUsuario(props){
                         value={usuario.nomeRole}
                         onChange={e => setUsuario({...usuario, nomeRole: e.target.value})}
                     /> */}
-                    <strong>PERMISSÕES:</strong>
-                    <select name="selecttipo" id="selecttipo" 
-                    value={usuario.nomeRole}
-                    onChange={e => setUsuario({...usuario, nomeRole: e.target.value})}>
-                        <option value="ROLE_VENDEDOR">VENDEDOR</option>
-                        <option value="ROLE_GERENTE">GERENTE</option>
-                    </select>
+                    <CampoGerenteVe
+                        userRole={userRole}
+                        usuario={usuario}
+                        setUsuario={setUsuario}
+                    ></CampoGerenteVe>
+
+                    <CampoDonoContaVe
+                        userId={userId}
+                        id={id}
+                        usuario={usuario}
+                        setUsuario={setUsuario}
+                    ></CampoDonoContaVe>
 
                     <div className="botoes" >
                         <button className="acao" onClick={alterar}>Alterar</button>

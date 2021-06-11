@@ -2,6 +2,7 @@ import React, {useState, useEffect } from 'react'
 import { Link, useHistory, useLocation } from 'react-router-dom'
 
 import api from '../../services/api'
+import formatDate from '../../services/formatDate';
 import formatReal from '../../services/formatReal';
 
 import './styles.css'
@@ -11,6 +12,13 @@ function getTitulo(estado) {
         return 'Orçamento'
     else 
         return 'Pedido de Venda'
+}
+
+function getOrcaOuPedido(estado) {
+    if (estado === 'ORCAMENTO')
+        return 'ORÇAMENTO'
+    else 
+        return 'PEDIDO'
 }
 
 export default function DetalheProduto(props){
@@ -61,9 +69,9 @@ export default function DetalheProduto(props){
                         value={pedido.id}
                         readOnly
                     />
-                    <strong>DATA DO PEDIDO:</strong>
+                    <strong value={pedido.estado}>DATA DO {getOrcaOuPedido(pedido.estado)}:</strong>
                     <input 
-                        value={pedido.dataCriacao}
+                        value={formatDate(pedido.dataCriacao)}
                         readOnly
                     />
                     <strong>PREÇO TOTAL:</strong>
